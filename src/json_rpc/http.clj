@@ -11,7 +11,8 @@
 (defrecord CljHttpClient [options]
   Client
   (post! [this url body]
-         (client/post url (merge options {:form-params body}))))
+    (future
+      (client/post url (merge options {:form-params body})))))
 
 (def clj-http
   "An instance of [[CljHttpClient]] that always talks JSON and does not throw

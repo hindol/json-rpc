@@ -42,14 +42,15 @@
 (defmethod send!
   :http
   [connection method params]
-  (let [url  (:url connection)
-        request  (encode method params)
-        response (http/post! http/clj-http url request)
-        body     (:body response)
-        status   (:status response)]
-    (log/debugf "request => %s, response => %s, status => %s" request body status)
-    {:status status
-     :body   (decode body)}))
+  (future
+    (let [url      (:url connection)
+          request  (encode method params)
+          response @(http/post! http/clj-http url request)
+          body     (:body response)
+          status   (:status response)]
+      (log/debugf "request => %s, response => %s, status => %s" request body status)
+      {:status status
+       :body   (decode body)})))
 
 (defmethod send!
   :default

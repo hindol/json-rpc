@@ -1,4 +1,4 @@
-# json-rpc
+# json-rpc [![Clojars Project](https://img.shields.io/clojars/v/com.github.hindol/json-rpc.svg)](https://clojars.org/com.github.hindol/json-rpc) [![cljdoc badge](https://cljdoc.org/badge/com.github.hindol/json-rpc)](https://cljdoc.org/d/com.github.hindol/json-rpc/CURRENT)
 
 Delightful [JSON-RPC 2.0](https://www.jsonrpc.org/specification) client for Clojure(Script).
 
@@ -6,6 +6,7 @@ Delightful [JSON-RPC 2.0](https://www.jsonrpc.org/specification) client for Cloj
 
 - [x] Support *Clojure*.
 - [x] Support *HTTP*.
+- [x] *Future* support.
 - [ ] Support [*HTTP status override*](https://www.jsonrpc.org/historical/json-rpc-over-http.html#response-codes).
 - [ ] Write *unit tests*.
 - [ ] Pluggable *HTTP client*.
@@ -42,3 +43,5 @@ Delightful [JSON-RPC 2.0](https://www.jsonrpc.org/specification) client for Cloj
 ### Component
 
 ### Mount
+
+### Logs

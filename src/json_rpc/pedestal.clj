@@ -1,5 +1,6 @@
 (ns json-rpc.pedestal
   (:require
+   [clojure.core.async :as async]
    [io.pedestal.interceptor :as intc]
    [json-rpc]))
 
@@ -8,9 +9,10 @@
   (intc/interceptor
    {:name ::json-rpc
     :enter (fn [context]
-             (let [request    (:request context)
-                   connection (:json-rpc-connection request)
-                   method     (:json-rpc-method request)
-                   params     (:json-rpc-params request)
-                   response   (json-rpc/send! connection method params)]
-               (assoc context :response response)))}))
+             (async/go
+               (let [request    (:request context)
+                     connection (:json-rpc-connection request)
+                     method     (:json-rpc-method request)
+                     params     (:json-rpc-params request)
+                     response   @(json-rpc/send! connection method params)]
+                 (assoc context :response response))))}))

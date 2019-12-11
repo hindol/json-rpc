@@ -1,4 +1,4 @@
-(defproject json-rpc "0.1.0-SNAPSHOT"
+(defproject com.github.hindol/json-rpc "0.1.0-SNAPSHOT"
   :description "Delightful JSON-RPC 2.0 client for Clojure(Script)."
   :url "https://github.com/Hindol/json-rpc"
   :license {:name "EPL-2.0 OR GPL-2.0-or-later WITH Classpath-exception-2.0"
