@@ -34,14 +34,22 @@ com.github.hindol/json-rpc {:mvn/version "${version}"}
 ### Quickstart
 
 ```clojure
+(ns example.core
+  (:require [json-rpc]))
+
 ;; Choose from HTTP[S], WebSocket and UNIX socket
 (def url ^:private ^:const "http://localhost:8545")
-(def url ^:private ^:const "wss://localhost:8546")
-(def url ^:private ^:const "unix:///var/run/geth.ipc")
+
+;; Coming soon!
+; (def url ^:private ^:const "wss://localhost:8546")
+; (def url ^:private ^:const "unix:///var/run/geth.ipc")
 
 (def connection ^:private ^:const (json-rpc/connect url))
 
+;; Receive a future
 (json-rpc/send! connection "eth_blockNumber" ["latest"])
+
+;; Deref to get the response. Blocks if not yet resolved.
 @(json-rpc/send! connection "eth_blockNumber" ["latest"])
 
 ;; Like send! but accepts a variable number of arguments
