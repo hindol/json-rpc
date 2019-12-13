@@ -1,7 +1,6 @@
 (ns json-rpc.core
   (:refer-clojure :exclude [send])
   (:require
-   [clojure.core.async :as async :refer [<!!]]
    [clojure.string :as string]
    [clojure.tools.logging :as log]))
 

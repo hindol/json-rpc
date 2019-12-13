@@ -1,7 +1,7 @@
 (ns json-rpc.ws
   (:require
-   [cheshire.core :as json]
    [clojure.core.async :as async :refer [<!! >!!]]
+   [clojure.data.json :as json]
    [json-rpc.core :as core]
    [gniazdo.core :as ws]))
 
@@ -24,9 +24,8 @@
   (future
     (let [{request-id :id
            :as        request} (core/encode method params)]
-      (ws/send-msg socket (json/generate-string request))
-      (let [{response-id :id
-             :as         response} (<!! source)]
+      (ws/send-msg socket (json/write-str request))
+      (let [{response-id :id :as response} (json/read-str (<!! source))]
         (if (not= request-id response-id)
           response
           (throw (ex-info "Response ID did not match request ID!"

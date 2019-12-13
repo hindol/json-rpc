@@ -1,6 +1,7 @@
 (ns json-rpc.http
   (:require
    [clj-http.client :as client]
+   [clojure.data.json :as json]
    [clojure.tools.logging :as log]
    [json-rpc.core :as core]))
 
@@ -25,17 +26,14 @@
 (def clj-http
   "An instance of [[CljHttpClient]] that always talks JSON and does not throw
    on exceptional HTTP status codes."
-  (->CljHttpClient {:content-type     :json    ;; Send JSON
-                    :as               :json    ;; Receive JSON as Clojure map
-                    :coerce           :always  ;; JSONify error responses
-                    :throw-exceptions false})) ;; Don't throw on 4XX, 5XX
+  (->CljHttpClient {:throw-exceptions false})) ;; Don't throw on 4XX, 5XX
 
 (defmethod core/send!
   :http
   [{url :url} method params]
   (future
     (let [request  (core/encode method params)
-          response @(post! clj-http url request)
+          response (json/read-str @(post! clj-http url (json/write-str request)))
           body     (:body response)
           status   (:status response)]
       (log/debugf "request => %s, response => %s" request response)
