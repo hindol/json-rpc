@@ -1,6 +1,14 @@
 (ns json-rpc.http
   (:require
-   [clj-http.client :as client]))
+   [clj-http.client :as client]
+   [clojure.tools.logging :as log]
+   [json-rpc.core :as core]))
+
+(defmethod core/connect
+  :http
+  [url]
+  {:scheme :http
+   :url    url})
 
 (defprotocol Client
   "An HTTP client."
@@ -21,3 +29,15 @@
                     :as               :json    ;; Receive JSON as Clojure map
                     :coerce           :always  ;; JSONify error responses
                     :throw-exceptions false})) ;; Don't throw on 4XX, 5XX
+
+(defmethod core/send!
+  :http
+  [{url :url} method params]
+  (future
+    (let [request  (core/encode method params)
+          response @(post! clj-http url request)
+          body     (:body response)
+          status   (:status response)]
+      (log/debugf "request => %s, response => %s" request response)
+      {:status status
+       :body   (core/decode body)})))
