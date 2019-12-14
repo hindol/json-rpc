@@ -22,13 +22,13 @@ Delightful [JSON-RPC 2.0](https://www.jsonrpc.org/specification) client for Cloj
 
 [![Clojars Project](https://img.shields.io/clojars/v/com.github.hindol/json-rpc.svg)](https://clojars.org/com.github.hindol/json-rpc)
 
-### Leiningen/Boot
+### [Leiningen](https://leiningen.org/)/[Boot](https://boot-clj.com/)
 
 ```clojure
 [com.github.hindol/json-rpc "${version}"]
 ```
 
-### tools.deps.alpha
+### [tools.deps.alpha](https://clojure.org/guides/deps_and_cli)
 
 ```clojure
 com.github.hindol/json-rpc {:mvn/version "${version}"}
