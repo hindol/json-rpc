@@ -1,6 +1,8 @@
-# json-rpc
+# JSON-RPC 2.0
 
-Delightful [JSON-RPC 2.0](https://www.jsonrpc.org/specification) client for Clojure(Script).
+Unified [JSON-RPC 2.0](https://www.jsonrpc.org/specification) interface over HTTP\[S\], WebSocket and UNIX socket for Clojure(Script).
+
+## Rationale
 
 ## Goals
 
@@ -9,14 +11,15 @@ Delightful [JSON-RPC 2.0](https://www.jsonrpc.org/specification) client for Cloj
 - [x] *Future* support.
 - [x] Support *WebSocket*.
 - [x] Support [*HTTP status override*](https://www.jsonrpc.org/historical/json-rpc-over-http.html#response-codes).
+- [ ] Write *unit tests*.
 - [ ] Support *UNIX socket*.
 - [ ] Support WebSocket *Ping/Pong*.
-- [ ] Support *batching*.
-- [ ] Write *unit tests*.
+- [ ] Support *request batching*.
 - [ ] Pluggable *HTTP client*.
 - [ ] Pluggable *WebSocket client*.
 - [ ] Pluggable *JSON encoder*.
 - [ ] Support *ClojureScript*.
+- [ ] Support *JSON-RPC notification*.
 
 ## Usage
 
@@ -38,26 +41,23 @@ com.github.hindol/json-rpc {:mvn/version "${version}"}
 
 ```clojure
 (ns example.core
-  (:require [json-rpc]))
+  (:require [json-rpc :as rpc]))
 
 ;; Choose from HTTP[S], WebSocket and UNIX socket
-(def url ^:private ^:const "http://localhost:8545")
+(def url "http://localhost:8545")
+(def url "ws://localhost:8546")
+(def url "unix:///var/run/geth.ipc")
 
-;; Coming soon!
-; (def url ^:private ^:const "wss://localhost:8546")
-; (def url ^:private ^:const "unix:///var/run/geth.ipc")
-
-(def connection ^:private ^:const (json-rpc/connect url))
+(def connection (rpc/connect url))
 
 ;; Receive a future
-(json-rpc/send! connection "eth_blockNumber" ["latest"])
+(rpc/send! connection "eth_blockNumber" ["latest"])
 
-;; Deref to get the response. Blocks if not yet resolved.
-@(json-rpc/send! connection "eth_blockNumber" ["latest"])
+;; Deref to get the response
+@(rpc/send! connection "eth_blockNumber" ["latest"])
 
 ;; Like send! but accepts a variable number of arguments
-(json-rpc/send!* connection "eth_blockNumber" "latest")
-@(json-rpc/send!* connection "eth_blockNumber" "latest")
+@(rpc/send!* connection "eth_blockNumber" "latest")
 ```
 
 ### Component
