@@ -28,9 +28,10 @@
   Client
   (send! [this {url :url} message]
     (let [{:keys [socket source]} (connect url)]
-      (ws/send-msg socket message)
-      (<!! source)
-      (ws/close socket))))
+      (try
+        (ws/send-msg socket message)
+        (<!! source)
+        (finally (ws/close socket))))))
 
 (def gniazdo
   "An instance of [[GniazdoClient]]."

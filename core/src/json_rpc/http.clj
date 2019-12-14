@@ -33,8 +33,6 @@
   (future
     (let [request  (core/encode method params)
           response (json/read-str (post! clj-http url (json/write-str request)))
-          body     (:body response)
-          status   (:status response)]
+          body     (:body response)]
       (log/debugf "request => %s, response => %s" request response)
-      {:status status
-       :body   (core/decode body)})))
+      (core/decode body))))
