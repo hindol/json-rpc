@@ -8,13 +8,14 @@ Delightful [JSON-RPC 2.0](https://www.jsonrpc.org/specification) client for Cloj
 - [x] Support *HTTP*.
 - [x] *Future* support.
 - [x] Support *WebSocket*.
+- [ ] Support *UNIX socket*.
 - [ ] Support WebSocket *Ping/Pong*.
 - [ ] Support *batching*.
 - [ ] Support [*HTTP status override*](https://www.jsonrpc.org/historical/json-rpc-over-http.html#response-codes).
 - [ ] Write *unit tests*.
 - [ ] Pluggable *HTTP client*.
+- [ ] Pluggable *WebSocket client*.
 - [ ] Pluggable *JSON encoder*.
-- [ ] Support *UNIX socket*.
 - [ ] Support *ClojureScript*.
 
 ## Usage

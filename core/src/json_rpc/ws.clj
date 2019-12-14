@@ -8,26 +8,47 @@
 (defmethod core/connect
   :ws
   [url]
+  {:scheme :ws
+   :url    url})
+
+(defn- connect
+  [url]
   (let [source (async/chan)
         socket (ws/connect url :on-receive #(>!! source %))]
-    {:scheme :ws
-     :socket socket
+    {:socket socket
      :source source}))
 
 (defprotocol Client
   "A WebSocket client."
-  (send! [this connection ]))
+  (send! [this connection message] "Writes data into a WebSocket connection."))
+
+; An implementation of [[json-rpc.ws/Client]] that uses `Gniazdo` to send data
+; across.
+(defrecord GniazdoClient []
+  Client
+  (send! [this {url :url} message]
+    (let [{:keys [socket source]} (connect url)]
+      (ws/send-msg socket message)
+      (<!! source)
+      (ws/close socket))))
+
+(def gniazdo
+  "An instance of [[GniazdoClient]]."
+  (->GniazdoClient))
 
 (defmethod core/send!
   :ws
-  [{:keys [socket source]} method params]
+  [connection method params]
   (future
     (let [{request-id :id
-           :as        request} (core/encode method params)]
-      (ws/send-msg socket (json/write-str request))
-      (let [{response-id :id :as response} (json/read-str (<!! source))]
-        (if (not= request-id response-id)
-          response
-          (throw (ex-info "Response ID did not match request ID!"
-                          {:request  request
-                           :response response})))))))
+           :as        request}   (core/encode method params)
+          {response-id :id
+           :as         response} (->> request
+                                      (json/write-str)
+                                      (send! gniazdo connection)
+                                      (json/read-str))]
+      (if (not= request-id response-id)
+        response
+        (throw (ex-info "Response ID did not match request ID!"
+                        {:request  request
+                         :response response}))))))
