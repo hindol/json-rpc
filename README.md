@@ -7,25 +7,28 @@ Delightful [JSON-RPC 2.0](https://www.jsonrpc.org/specification) client for Cloj
 - [x] Support *Clojure*.
 - [x] Support *HTTP*.
 - [x] *Future* support.
-- [ ] Support [*HTTP status override*](https://www.jsonrpc.org/historical/json-rpc-over-http.html#response-codes).
+- [x] Support *WebSocket*.
+- [x] Support [*HTTP status override*](https://www.jsonrpc.org/historical/json-rpc-over-http.html#response-codes).
+- [ ] Support *UNIX socket*.
+- [ ] Support WebSocket *Ping/Pong*.
+- [ ] Support *batching*.
 - [ ] Write *unit tests*.
 - [ ] Pluggable *HTTP client*.
+- [ ] Pluggable *WebSocket client*.
 - [ ] Pluggable *JSON encoder*.
-- [ ] Support *WebSocket*.
-- [ ] Support *UNIX socket*.
 - [ ] Support *ClojureScript*.
 
 ## Usage
 
 [![Clojars Project](https://img.shields.io/clojars/v/com.github.hindol/json-rpc.svg)](https://clojars.org/com.github.hindol/json-rpc)
 
-### Leiningen/Boot
+### [Leiningen](https://leiningen.org/)/[Boot](https://boot-clj.com/)
 
 ```clojure
 [com.github.hindol/json-rpc "${version}"]
 ```
 
-### tools.deps.alpha
+### [tools.deps.alpha](https://clojure.org/guides/deps_and_cli)
 
 ```clojure
 com.github.hindol/json-rpc {:mvn/version "${version}"}

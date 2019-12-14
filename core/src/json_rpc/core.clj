@@ -1,9 +1,8 @@
-(ns json-rpc
+(ns json-rpc.core
   (:refer-clojure :exclude [send])
   (:require
    [clojure.string :as string]
-   [clojure.tools.logging :as log]
-   [json-rpc.http :as http]))
+   [clojure.tools.logging :as log]))
 
 (def ^:private ^:const version
   "JSON-RPC protocol version."
@@ -13,7 +12,7 @@
   []
   (.toString (java.util.UUID/randomUUID)))
 
-(defn- encode
+(defn encode
   "Encodes JSON-RPC method and params as a valid JSON-RPC request."
   [method params]
   {:jsonrpc version
@@ -21,36 +20,37 @@
    :params  params
    :id      (uuid)})
 
-(defn- decode
+(defn decode
   "Decodes result or error from JSON-RPC response."
   [body]
   (select-keys body [:result :error]))
 
-(defn connect
-  "Creates a JSON-RPC connection object."
+(defn- str->scheme
+  "Tries to map input to one of the known schemes."
+  [input]
+  (condp = input
+    "http"  :http
+    "https" :https
+    "ws"    :ws
+    "wss"   :ws
+    "unix"  :unix
+    (throw (ex-info "No such scheme!"
+                    {:scheme input}))))
+
+(defn- scheme
+  "Identifies the scheme from an URL."
   [url]
-  (let [[scheme path] (string/split url #"://" 2)]
-    {:scheme (keyword scheme)
-     :path   path
-     :url    url}))
+  (let [[scheme _] (string/split url #"://")]
+    (str->scheme scheme)))
+
+(defmulti connect
+  "Creates a JSON-RPC connection object."
+  scheme)
 
 (defmulti send!
   "Sends a JSON-RPC call to the server."
   (fn [connection & _]
     (:scheme connection)))
-
-(defmethod send!
-  :http
-  [connection method params]
-  (future
-    (let [url      (:url connection)
-          request  (encode method params)
-          response @(http/post! http/clj-http url request)
-          body     (:body response)
-          status   (:status response)]
-      (log/debugf "request => %s, response => %s, status => %s" request body status)
-      {:status status
-       :body   (decode body)})))
 
 (defmethod send!
   :default
