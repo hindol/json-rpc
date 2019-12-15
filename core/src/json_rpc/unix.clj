@@ -51,7 +51,7 @@
   [connection method params]
   (future
     (let [{request-id :id
-           :as        request}   (json/encode method params)
+           :as        request}   (core/encode method params)
           {response-id :id
            :as         response} (->> request
                                       (write! unix-client connection)
