@@ -33,6 +33,12 @@
   "Creates a JSON-RPC connection object."
   (fn [url] (url/scheme url)))
 
+(defmethod connect
+  :default
+  [url]
+  (throw (ex-info "Unsupported scheme: %s. Are you passing a valid URL?"
+                  {:url url})))
+
 (defmulti send!
   "Sends a JSON-RPC call to the server."
   (fn [connection & _]
@@ -42,7 +48,8 @@
   :default
   [& args]
   (let [[connection & _] args]
-    (log/warnf "send! called with: %s. No such scheme: %s" args (:scheme connection))))
+    (log/warnf "send! called with: %s. No such scheme: %s."
+               args (:scheme connection))))
 
 (defn send!*
   "Like [[send!]] but accepts a variable number of arguments."
