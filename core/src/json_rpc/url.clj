@@ -6,7 +6,7 @@
   "Extracts the scheme from an URL."
   [url]
   (let [[scheme _] (string/split url #"://")]
-    scheme))
+    (keyword scheme)))
 
 (defn path
   "Extracts the path from an URL."

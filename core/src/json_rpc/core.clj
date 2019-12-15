@@ -13,18 +13,6 @@
   []
   (.toString (java.util.UUID/randomUUID)))
 
-(defn- parse-scheme
-  "Tries to map input to one of the known schemes."
-  [input]
-  (condp = input
-    "http"  :http
-    "https" :https
-    "ws"    :ws
-    "wss"   :ws
-    "unix"  :unix
-    (throw (ex-info "No such scheme!"
-                    {:scheme input}))))
-
 (defn encode
   "Encodes JSON-RPC method and params as a valid JSON-RPC request."
   ([method params id]
@@ -43,7 +31,7 @@
 
 (defmulti connect
   "Creates a JSON-RPC connection object."
-  (fn [url] (parse-scheme (url/scheme url))))
+  (fn [url] (url/scheme url)))
 
 (defmulti send!
   "Sends a JSON-RPC call to the server."
