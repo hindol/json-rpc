@@ -1,8 +1,8 @@
 (ns json-rpc.unix
   (:require
-   [clojure.data.json :as json]
    [clojure.java.io :as io]
    [json-rpc.core :as core]
+   [json-rpc.json :as json]
    [json-rpc.url :as url])
   (:import
    (java.io InputStreamReader PrintWriter)
@@ -51,10 +51,9 @@
   [connection method params]
   (future
     (let [{request-id :id
-           :as        request}   (core/encode method params)
+           :as        request}   (json/encode method params)
           {response-id :id
            :as         response} (->> request
-                                      (json/write-str)
                                       (write! unix-client connection)
                                       (json/read-str))]
       (if (not= request-id response-id)

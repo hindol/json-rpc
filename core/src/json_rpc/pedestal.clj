@@ -2,7 +2,7 @@
   (:require
    [clojure.core.async :as async]
    [io.pedestal.interceptor :as intc]
-   [json-rpc]))
+   [json-rpc.core :as core]))
 
 (defn- parse-int
   [s]
@@ -37,6 +37,6 @@
                      connection (:json-rpc-connection request)
                      method     (:json-rpc-method request)
                      params     (:json-rpc-params request)
-                     body       @(json-rpc/send! connection method params)]
+                     body       @(core/send! connection method params)]
                  (assoc context :response {:status (infer-http-status body)
                                            :body   body}))))}))

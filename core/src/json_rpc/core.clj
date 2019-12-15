@@ -2,28 +2,16 @@
   (:refer-clojure :exclude [send])
   (:require
    [clojure.tools.logging :as log]
+   [json-rpc.json :as json]
    [json-rpc.url :as url]))
 
-(def ^:private ^:const version
+(def ^:const version
   "JSON-RPC protocol version."
   "2.0")
 
-(defn- uuid
+(defn uuid
   []
   (.toString (java.util.UUID/randomUUID)))
-
-(defn encode
-  "Encodes JSON-RPC method and params as a valid JSON-RPC request."
-  [method params]
-  {:jsonrpc version
-   :method  method
-   :params  params
-   :id      (uuid)})
-
-(defn decode
-  "Decodes result or error from JSON-RPC response."
-  [body]
-  (select-keys body [:result :error]))
 
 (defn- parse-scheme
   "Tries to map input to one of the known schemes."
@@ -36,6 +24,22 @@
     "unix"  :unix
     (throw (ex-info "No such scheme!"
                     {:scheme input}))))
+
+(defn encode
+  "Encodes JSON-RPC method and params as a valid JSON-RPC request."
+  ([method params id]
+   (json/write-str json/data-json {:jsonrpc version
+                                   :method  method
+                                   :params  params
+                                   :id      id}))
+  ([method params]
+   (encode method params (uuid))))
+
+(defn decode
+  "Decodes result or error from JSON-RPC response."
+  [json]
+  (let [body (json/read-str json/data-json json)]
+    (select-keys body [:result :error])))
 
 (defmulti connect
   "Creates a JSON-RPC connection object."

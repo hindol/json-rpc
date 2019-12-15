@@ -41,7 +41,7 @@ com.github.hindol/json-rpc {:mvn/version "${version}"}
 
 ```clojure
 (ns example.core
-  (:require [json-rpc :as rpc]))
+  (:require [json-rpc.core :as rpc]))
 
 ;; Choose from HTTP[S], WebSocket and UNIX socket
 (def url "http://localhost:8545")
