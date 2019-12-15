@@ -23,7 +23,7 @@ Unified [JSON-RPC 2.0](https://www.jsonrpc.org/specification) interface over HTT
 
 ## Usage
 
-[![Clojars Project](https://img.shields.io/clojars/v/com.github.hindol/json-rpc.svg)](https://clojars.org/com.github.hindol/json-rpc)
+[![Clojars Project](https://img.shields.io/clojars/v/com.github.hindol/json-rpc.core.svg)](https://clojars.org/com.github.hindol/json-rpc.core)
 
 ### [Leiningen](https://leiningen.org/)/[Boot](https://boot-clj.com/)
 
@@ -68,4 +68,4 @@ com.github.hindol/json-rpc.core {:mvn/version "${version}"}
 
 ## API Documentation
 
-[![cljdoc badge](https://cljdoc.org/badge/com.github.hindol/json-rpc)](https://cljdoc.org/d/com.github.hindol/json-rpc/CURRENT)
+[![cljdoc badge](https://cljdoc.org/badge/com.github.hindol/json-rpc.core)](https://cljdoc.org/d/com.github.hindol/json-rpc.core/0.1.0-SNAPSHOT)
