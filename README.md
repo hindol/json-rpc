@@ -28,13 +28,13 @@ Unified [JSON-RPC 2.0](https://www.jsonrpc.org/specification) interface over HTT
 ### [Leiningen](https://leiningen.org/)/[Boot](https://boot-clj.com/)
 
 ```clojure
-[com.github.hindol/json-rpc "${version}"]
+[com.github.hindol/json-rpc.core "${version}"]
 ```
 
 ### [tools.deps.alpha](https://clojure.org/guides/deps_and_cli)
 
 ```clojure
-com.github.hindol/json-rpc {:mvn/version "${version}"}
+com.github.hindol/json-rpc.core {:mvn/version "${version}"}
 ```
 
 ### Quickstart
