@@ -1,8 +1,8 @@
 (ns json-rpc.core
   (:refer-clojure :exclude [send])
   (:require
-   [clojure.string :as string]
-   [clojure.tools.logging :as log]))
+   [clojure.tools.logging :as log]
+   [json-rpc.url :as url]))
 
 (def ^:private ^:const version
   "JSON-RPC protocol version."
@@ -25,7 +25,7 @@
   [body]
   (select-keys body [:result :error]))
 
-(defn- str->scheme
+(defn- parse-scheme
   "Tries to map input to one of the known schemes."
   [input]
   (condp = input
@@ -37,15 +37,9 @@
     (throw (ex-info "No such scheme!"
                     {:scheme input}))))
 
-(defn- scheme
-  "Identifies the scheme from an URL."
-  [url]
-  (let [[scheme _] (string/split url #"://")]
-    (str->scheme scheme)))
-
 (defmulti connect
   "Creates a JSON-RPC connection object."
-  scheme)
+  (fn [url] (parse-scheme (url/scheme url))))
 
 (defmulti send!
   "Sends a JSON-RPC call to the server."

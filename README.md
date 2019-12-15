@@ -11,8 +11,8 @@ Unified [JSON-RPC 2.0](https://www.jsonrpc.org/specification) interface over HTT
 - [x] *Future* support.
 - [x] Support *WebSocket*.
 - [x] Support [*HTTP status override*](https://www.jsonrpc.org/historical/json-rpc-over-http.html#response-codes).
+- [x] Support *UNIX socket*.
 - [ ] Write *unit tests*.
-- [ ] Support *UNIX socket*.
 - [ ] Support WebSocket *Ping/Pong*.
 - [ ] Support *request batching*.
 - [ ] Pluggable *HTTP client*.
