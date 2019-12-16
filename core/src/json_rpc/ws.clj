@@ -5,12 +5,6 @@
    [json-rpc.core :as core]
    [gniazdo.core :as ws]))
 
-(defmethod core/connect
-  :ws
-  [url]
-  {:scheme :ws
-   :url    url})
-
 (defprotocol Client
   "A WebSocket client."
   (connect [this url] "Returns a WebSocket connection for the given URL.")

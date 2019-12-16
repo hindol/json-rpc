@@ -10,12 +10,6 @@
    (java.nio.channels Channels)
    (jnr.unixsocket UnixSocketAddress UnixSocketChannel)))
 
-(defmethod core/connect
-  :unix
-  [url]
-  {:scheme :unix
-   :path   (url/path url)})
-
 (defprotocol Client
   "An UNIX socket client."
   (open [this path] "Opens and returns a UNIX socket for the given path.")

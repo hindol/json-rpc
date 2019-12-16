@@ -5,12 +5,6 @@
    [clojure.tools.logging :as log]
    [json-rpc.core :as core]))
 
-(defmethod core/connect
-  :http
-  [url]
-  {:scheme :http
-   :url    url})
-
 (defprotocol Client
   "An HTTP client."
   (post! [this url body] "Makes an HTTP POST request."))

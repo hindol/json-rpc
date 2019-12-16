@@ -31,12 +31,36 @@
 
 (defmulti connect
   "Creates a JSON-RPC connection object."
-  (fn [url] (url/scheme url)))
+  (fn [url]
+    (let [scheme (url/scheme url)]
+      (condp = scheme
+        :https :http
+        :wss   :ws
+        scheme))))
+
+(defmethod connect
+  :http
+  [url]
+  {:scheme :http
+   :url    url})
+
+(defmethod connect
+  :ws
+  [url]
+  {:scheme :ws
+   :url    url})
+
+(defmethod connect
+  :unix
+  [url]
+  {:scheme :unix
+   :path   (url/path url)})
 
 (defmethod connect
   :default
   [url]
-  (throw (ex-info "Unsupported scheme: %s. Are you passing a valid URL?"
+  (throw (ex-info (format "Unsupported scheme: %s. Are you passing a valid URL?"
+                          (url/scheme url))
                   {:url url})))
 
 (defmulti send!
