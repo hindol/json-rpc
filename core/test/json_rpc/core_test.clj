@@ -46,7 +46,8 @@
   (testing "response with error"
     (is (= (decode (json/write-str {:jsonrpc version
                                     :error   {:code    -32602
-                                              :message "Method not found"}}))
+                                              :message "Method not found"}
+                                    :id      1}))
            {:error {:code    -32602
                     :message "Method not found"}}))))
 
