@@ -28,14 +28,13 @@
               :id      id}))))
   (testing "without ID"
     (let [method "eth_blockNumber"
-          params ["latest"]
-          id     1]
-      (is (= (json/read-str (encode method params id)
-                            :key-fn keyword)
+          params ["latest"]]
+      (is (= (dissoc (json/read-str (encode method params)
+                                    :key-fn keyword)
+                     :id)
              {:jsonrpc version
               :method  method
-              :params  params
-              :id      id})))))
+              :params  params})))))
 
 (deftest decode-test
   (testing "response with result"
