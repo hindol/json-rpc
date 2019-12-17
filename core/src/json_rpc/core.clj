@@ -80,12 +80,12 @@
   :http
   [{url :url} method params]
   (future
-    (let [request       (encode method params)
-          response      (->> request
-                             (json/write-str json/data-json)
-                             (http/post! http/clj-http url)
-                             (json/read-str json/data-json))
-          body          (:body response)]
+    (let [request  (encode method params)
+          response (->> request
+                        (json/write-str json/data-json)
+                        (http/post! http/clj-http url)
+                        (json/read-str json/data-json))
+          body     (:body response)]
       (log/debugf "request => %s, response => %s" request response)
       (decode body))))
 
