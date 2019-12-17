@@ -3,7 +3,10 @@
    [clojure.data.json :as json]
    [clojure.string :as str]
    [clojure.test :refer [deftest is testing]]
-   [json-rpc.core :refer [connect decode encode uuid version]])
+   [json-rpc.core :refer [connect decode encode send! uuid version]]
+   [json-rpc.http :as http]
+   [json-rpc.ws :as ws]
+   [shrubbery.core :refer [mock received?]])
   (:import
    (clojure.lang ExceptionInfo)))
 
@@ -41,14 +44,16 @@
     (is (= (decode (json/write-str {:jsonrpc version
                                     :result  "0x0"
                                     :id      1}))
-           {:result "0x0"})))
+           {:result "0x0"
+            :id     1})))
   (testing "response with error"
     (is (= (decode (json/write-str {:jsonrpc version
                                     :error   {:code    -32602
                                               :message "Method not found"}
                                     :id      1}))
            {:error {:code    -32602
-                    :message "Method not found"}}))))
+                    :message "Method not found"}
+            :id    1}))))
 
 (deftest connect-test
 
@@ -77,3 +82,30 @@
 
   (testing "exception on unsupported scheme"
     (is (thrown? ExceptionInfo (connect "file:///var/run/geth.ipc")))))
+
+(deftest send!-test
+  (let [response (json/write-str {:jsonrpc "2.0"
+                                  :result  "0x0"
+                                  :id      1})]
+    (testing "HTTP requests"
+      (let [client (mock http/Client {:post! response})]
+        (is (not (received? client http/post!)))
+        (is (= {:result "0x0"
+                :id     1}
+               @(send! {:scheme :http
+                        :url    "http://www.microsoft.com"}
+                       client
+                       "eth_blockNumber"
+                       ["latest"])))
+        (is (received? client http/post!))))
+    (testing "WS requests"
+      (let [client (mock ws/Client {:write! response})]
+        (is (not (received? client ws/write!)))
+        (is (= {:result "0x0"
+                :id     1}
+               @(send! {:scheme :ws
+                        :url    "ws://www.microsoft.com"}
+                       client
+                       "eth_blockNumber"
+                       ["latest"])))
+        (is (received? client ws/write!))))))

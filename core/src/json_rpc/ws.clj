@@ -1,8 +1,6 @@
 (ns json-rpc.ws
   (:require
    [clojure.core.async :as async :refer [<!! >!!]]
-   [clojure.data.json :as json]
-   [json-rpc.core :as core]
    [gniazdo.core :as ws]))
 
 (defprotocol Client
@@ -24,7 +22,7 @@
   ; For now, create the connection just before writing. This is slated
   ; to change once WebSocket ping/pong support is implemented.
   (write! [this {url :url} message]
-    (let [{:keys [socket source]} (connect url)]
+    (let [{:keys [socket source]} (connect this url)]
       (try
         (ws/send-msg socket message)
         (<!! source)
@@ -33,20 +31,3 @@
 (def gniazdo
   "An instance of [[GniazdoClient]]."
   (->GniazdoClient))
-
-(defmethod core/send!
-  :ws
-  [connection method params]
-  (future
-    (let [{request-id :id
-           :as        request}   (core/encode method params)
-          {response-id :id
-           :as         response} (->> request
-                                      (json/write-str)
-                                      (write! gniazdo connection)
-                                      (json/read-str))]
-      (if (not= request-id response-id)
-        response
-        (throw (ex-info "Response ID did not match request ID!"
-                        {:request  request
-                         :response response}))))))

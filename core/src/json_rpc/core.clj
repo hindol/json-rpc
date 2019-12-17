@@ -4,7 +4,8 @@
    [clojure.tools.logging :as log]
    [json-rpc.http :as http]
    [json-rpc.json :as json]
-   [json-rpc.url :as url]))
+   [json-rpc.url :as url]
+   [json-rpc.ws :as ws]))
 
 (def ^:const version
   "JSON-RPC protocol version."
@@ -28,7 +29,7 @@
   "Decodes result or error from JSON-RPC response."
   [json]
   (let [body (json/read-str json/data-json json)]
-    (select-keys body [:result :error])))
+    (select-keys body [:result :error :id])))
 
 (defmulti connect
   "Creates a JSON-RPC connection object."
@@ -78,16 +79,32 @@
 
 (defmethod send!
   :http
-  [{url :url} method params]
-  (future
-    (let [request  (encode method params)
-          response (->> request
-                        (json/write-str json/data-json)
-                        (http/post! http/clj-http url)
-                        (json/read-str json/data-json))
-          body     (:body response)]
-      (log/debugf "request => %s, response => %s" request response)
-      (decode body))))
+  ([{url :url} client method params]
+   (future
+     (let [request  (encode method params)
+           response (->> request
+                         (http/post! client url))]
+       (log/debugf "request => %s, response => %s" request response)
+       (decode response))))
+  ([connection method params]
+   (send! connection http/clj-http method params)))
+
+(defmethod send!
+  :ws
+  ([connection client method params]
+   (future
+     (let [id       (uuid)
+           request  (encode method params id)
+           response (->> request
+                         (ws/write! client connection)
+                         (decode))]
+       (if (not= id (:id response))
+         response
+         (throw (ex-info "Response ID did not match request ID!"
+                         {:request  request
+                          :response response}))))))
+  ([connection method params]
+   (send! connection ws/gniazdo method params)))
 
 (defmethod send!
   :default
