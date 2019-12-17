@@ -2,6 +2,7 @@
   (:refer-clojure :exclude [send])
   (:require
    [clojure.tools.logging :as log]
+   [json-rpc.http :as http]
    [json-rpc.json :as json]
    [json-rpc.url :as url]))
 
@@ -31,12 +32,7 @@
 
 (defmulti connect
   "Creates a JSON-RPC connection object."
-  (fn [url]
-    (let [scheme (url/scheme url)]
-      (condp = scheme
-        :https :http
-        :wss   :ws
-        scheme))))
+  url/scheme)
 
 (defmethod connect
   :http
@@ -45,7 +41,19 @@
    :url    url})
 
 (defmethod connect
+  :https
+  [url]
+  {:scheme :http
+   :url    url})
+
+(defmethod connect
   :ws
+  [url]
+  {:scheme :ws
+   :url    url})
+
+(defmethod connect
+  :wss
   [url]
   {:scheme :ws
    :url    url})
@@ -67,6 +75,19 @@
   "Sends a JSON-RPC call to the server."
   (fn [connection & _]
     (:scheme connection)))
+
+(defmethod send!
+  :http
+  [{url :url} method params]
+  (future
+    (let [request       (encode method params)
+          response      (->> request
+                             (json/write-str json/data-json)
+                             (http/post! http/clj-http url)
+                             (json/read-str json/data-json))
+          body          (:body response)]
+      (log/debugf "request => %s, response => %s" request response)
+      (decode body))))
 
 (defmethod send!
   :default
