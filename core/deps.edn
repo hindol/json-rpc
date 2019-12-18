@@ -5,8 +5,11 @@
                                 org.slf4j/slf4j-simple         {:mvn/version "1.7.28"}}
                   :main-opts   ["-m" "cognitect.test-runner"]}
            :pack {:extra-deps {pack/pack.alpha {:git/url "https://github.com/juxt/pack.alpha.git"
-                                                :sha     "2769a6224bfb938e777906ea311b3daf7d2220f5"}}
-                  :main-opts  ["-m"]}}
+                                                :sha     "c70740ffc10805f34836da2160fa1899601fac02"}}
+                  :main-opts  ["-m" "mach.pack.alpha.skinny" "--no-libs" "--project-path" "dist/json-rpc.core.jar"]}
+           :deploy {:extra-deps {deps-deploy {:mvn/version "RELEASE"}}
+                    :main-opts  ["-m" "deps-deploy.deps-deploy" "deploy"
+                                 "dist/json-rpc.core.jar"]}}
  :deps    {clj-http                         {:mvn/version "3.10.0"}
            com.github.jnr/jnr-unixsocket    {:mvn/version "0.24"}
            io.pedestal/pedestal.interceptor {:mvn/version "0.5.7"}
