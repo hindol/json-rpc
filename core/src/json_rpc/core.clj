@@ -74,12 +74,15 @@
                   {:url url})))
 
 (defmulti send!
-  "Sends a JSON-RPC call to the server."
+  "Sends a JSON-RPC request to the server.
+   Connection can be over HTTP[S], WS[S] or UNIX sockets."
   (fn [connection & _]
     (:scheme connection)))
 
 (defmethod send!
   :http
+  ;; Sends a JSON-RPC request to the server over HTTP[S].
+  http-send!
   ([{url :url} client method params]
    (future
      (let [request  (encode method params)
@@ -92,6 +95,8 @@
 
 (defmethod send!
   :ws
+  ws-send!
+  ;; Sends a JSON-RPC request to the server over WS [S] .
   ([connection client method params]
    (future
      (let [id       (uuid)
@@ -109,6 +114,8 @@
 
 (defmethod send!
   :unix
+  unix-send!
+  ;; Sends a JSON-RPC request to the server over a UNIX socket.
   ([connection client method params]
    (future
      (let [id       (uuid)

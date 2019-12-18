@@ -11,9 +11,11 @@
 (defrecord CljHttpClient [options]
   Client
   (post! [this url body]
-    (client/post url (merge options {:form-params body}))))
+    (client/post url (merge options {:body body}))))
 
 (def clj-http
   "An instance of [[CljHttpClient]] that does not throw on exceptional
    HTTP status codes."
-  (->CljHttpClient {:throw-exceptions false})) ;; Don't throw on 4XX, 5XX
+  (->CljHttpClient {:headers          {"Content-Type" "application/json"
+                                       "Accept"       "application/json"}
+                    :throw-exceptions false})) ;; Don't throw on 4XX, 5XX
