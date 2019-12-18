@@ -5,6 +5,7 @@
    [clojure.test :refer [deftest is testing]]
    [json-rpc.core :refer [connect decode encode send! uuid version]]
    [json-rpc.http :as http]
+   [json-rpc.unix :as unix]
    [json-rpc.ws :as ws]
    [shrubbery.core :refer [mock received?]])
   (:import
@@ -108,4 +109,15 @@
                        client
                        "eth_blockNumber"
                        ["latest"])))
-        (is (received? client ws/write!))))))
+        (is (received? client ws/write!))))
+    (testing "UNIX sockets"
+      (let [client (mock unix/Client {:write! response})]
+        (is (not (received? client unix/write!)))
+        (is (= {:result "0x0"
+                :id     1}
+               @(send! {:scheme :unix
+                        :path   "/var/run/geth.ipc"}
+                       client
+                       "eth_blockNumber"
+                       ["latest"])))
+        (is (received? client unix/write!))))))

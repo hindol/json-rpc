@@ -1,9 +1,6 @@
 (ns json-rpc.unix
   (:require
-   [clojure.java.io :as io]
-   [json-rpc.core :as core]
-   [json-rpc.json :as json]
-   [json-rpc.url :as url])
+   [clojure.java.io :as io])
   (:import
    (java.io InputStreamReader PrintWriter)
    (java.nio CharBuffer)
@@ -39,19 +36,3 @@
 (def unix-client
   "An instance of [[UnixClient]]."
   (->UnixClient))
-
-(defmethod core/send!
-  :unix
-  [connection method params]
-  (future
-    (let [{request-id :id
-           :as        request}   (core/encode method params)
-          {response-id :id
-           :as         response} (->> request
-                                      (write! unix-client connection)
-                                      (json/read-str))]
-      (if (not= request-id response-id)
-        response
-        (throw (ex-info "Response ID did not match request ID!"
-                        {:request  request
-                         :response response}))))))

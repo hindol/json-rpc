@@ -4,6 +4,7 @@
    [clojure.tools.logging :as log]
    [json-rpc.http :as http]
    [json-rpc.json :as json]
+   [json-rpc.unix :as unix]
    [json-rpc.url :as url]
    [json-rpc.ws :as ws]))
 
@@ -105,6 +106,23 @@
                           :response response}))))))
   ([connection method params]
    (send! connection ws/gniazdo method params)))
+
+(defmethod send!
+  :unix
+  ([connection client method params]
+   (future
+     (let [id       (uuid)
+           request  (encode method params id)
+           response (->> request
+                         (unix/write! client connection)
+                         (decode))]
+       (if (not= id (:id response))
+         response
+         (throw (ex-info "Response ID did not match request ID!"
+                         {:request  request
+                          :response response}))))))
+  ([connection method params]
+   (send! connection unix/unix-client method params)))
 
 (defmethod send!
   :default
