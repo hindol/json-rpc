@@ -4,6 +4,24 @@ Unified [JSON-RPC 2.0](https://www.jsonrpc.org/specification) interface over HTT
 
 ## Rationale
 
+Blockchain clients including but not limited to [Go Ethereum](https://github.com/ethereum/go-ethereum), [Quorum](https://github.com/jpmorganchase/quorum) and [Besu Ethereum Client](https://github.com/hyperledger/besu/) expose their JSON-RPC 2.0 compliant API over UNIX IPC, WebSocket and HTTP\[S\]. Switching between them should be as easy as changing this,
+
+```clojure
+(def url "http://localhost:8545")
+```
+
+To this,
+
+```clojure
+(def url "ws://localhost:8546")
+```
+
+Or even this,
+
+```clojure
+(def url "unix:///var/run/geth.ipc")
+```
+
 ## Goals
 
 - [x] Support *Clojure*.
@@ -14,6 +32,7 @@ Unified [JSON-RPC 2.0](https://www.jsonrpc.org/specification) interface over HTT
 - [x] Support *UNIX socket*.
 - [x] Write *unit tests*.
 - [ ] Write *integration tests*.
+- [ ] Expand *API documentation*.
 - [ ] Support WebSocket *Ping/Pong*.
 - [ ] Support *request batching*.
 - [ ] Pluggable *HTTP client*.
