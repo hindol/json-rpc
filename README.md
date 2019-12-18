@@ -1,6 +1,6 @@
 # JSON-RPC 2.0
 
-Unified [JSON-RPC 2.0](https://www.jsonrpc.org/specification) interface over HTTP\[S\], WebSocket and UNIX socket for Clojure(Script).
+Unified [JSON-RPC 2.0](https://www.jsonrpc.org/specification) interface over HTTP\[S\], WebSocket and UNIX socket for Clojure/Script.
 
 ## Rationale
 
