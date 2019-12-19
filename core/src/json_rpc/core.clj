@@ -96,7 +96,7 @@
 (defmethod send!
   :ws
   ws-send!
-  ;; Sends a JSON-RPC request to the server over WS [S] .
+  ;; Sends a JSON-RPC request to the server over WS[S] .
   ([connection client method params]
    (future
      (let [id       (uuid)

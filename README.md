@@ -4,23 +4,7 @@ Unified [JSON-RPC 2.0](https://www.jsonrpc.org/specification) interface over HTT
 
 ## Rationale
 
-Blockchain clients including but not limited to [Go Ethereum](https://github.com/ethereum/go-ethereum), [Quorum](https://github.com/jpmorganchase/quorum) and [Besu Ethereum Client](https://github.com/hyperledger/besu/) expose their JSON-RPC 2.0 compliant API over UNIX IPC, WebSocket and HTTP\[S\]. Switching between them should be as easy as changing this,
-
-```clojure
-(def url "http://localhost:8545")
-```
-
-To this,
-
-```clojure
-(def url "ws://localhost:8546")
-```
-
-Or even this,
-
-```clojure
-(def url "unix:///var/run/geth.ipc")
-```
+Blockchain clients including but not limited to [Go Ethereum](https://github.com/ethereum/go-ethereum), [Quorum](https://github.com/jpmorganchase/quorum) and [Besu Ethereum Client](https://github.com/hyperledger/besu/) expose their JSON-RPC 2.0 compliant API over UNIX IPC, WebSocket and HTTP\[S\]. Switching between them should be as easy as changing `(def url "http://localhost:8545")` to `(def url "ws://localhost:8546")` or `(def url "unix:///var/run/geth.ipc")`.
 
 ## Goals
 
@@ -64,8 +48,8 @@ com.github.hindol/json-rpc.core {:mvn/version "${version}"}
   (:require [json-rpc.core :as rpc]))
 
 ;; Choose from HTTP[S], WebSocket and UNIX socket
-(def url "http://localhost:8545")
-(def url "ws://localhost:8546")
+(def url "http://localhost:8545")    ;; Or https://
+(def url "ws://localhost:8546")      ;; Or wss://
 (def url "unix:///var/run/geth.ipc")
 
 (def connection (rpc/connect url))
