@@ -10,12 +10,10 @@
                     :method  "eth_blockNumber"
                     :params  ["latest"]
                     :id      1}
-          response (post! clj-http
-                          "https://postman-echo.com/post"
-                          (json/write-str request))
-          body     (-> response
-                       :body
-                       (json/read-str :key-fn keyword))]
-      (is (= request (:json body)))
-      (is (= "application/json" (-> body :headers :content-type)))
-      (is (= "application/json" (-> body :headers :accept))))))
+          response (json/read-str (post! clj-http
+                                         "https://postman-echo.com/post"
+                                         (json/write-str request))
+                                  :key-fn keyword)]
+      (is (= request (:json response)))
+      (is (= "application/json" (-> response :headers :content-type)))
+      (is (= "application/json" (-> response :headers :accept))))))

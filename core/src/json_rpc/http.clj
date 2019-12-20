@@ -11,7 +11,10 @@
 (defrecord CljHttpClient [options]
   Client
   (post! [this url body]
-    (client/post url (merge options {:body body}))))
+    (->> {:body body}
+         (merge options)
+         (client/post url)
+         :body)))
 
 (def clj-http
   "An instance of [[CljHttpClient]] that does not throw on exceptional
