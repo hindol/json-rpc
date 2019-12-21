@@ -3,7 +3,7 @@
    [clojure.data.json :as json]
    [clojure.string :as str]
    [clojure.test :refer [deftest is testing]]
-   [json-rpc.core :refer [decode encode send! uuid version]]
+   [json-rpc.core :refer [close decode encode send! open route uuid version]]
    [json-rpc.http :as http]
    [json-rpc.unix :as unix]
    [json-rpc.ws :as ws]
@@ -55,3 +55,24 @@
            {:error {:code    -32602
                     :message "Method not found"}
             :id    1}))))
+
+(deftest route-test
+  (testing "router returns correct record for scheme"
+    (is (= http/clj-http (route "http://postman-echo.com/post")))
+    (is (= http/clj-http (route "https://postman-echo.com/post")))
+    (is (= ws/gniazdo (route "ws://echo.websocket.org")))
+    (is (= ws/gniazdo (route "wss://echo.websocket.org")))
+    (is (= unix/unix-socket (route "unix:///var/run/geth.ipc")))))
+
+(deftest ^:integration open-test
+  (testing "open can open channels for all supported schemes"
+    (doseq [url ["http://postman-echo.com/post"
+                 "https://postman-echo.com/post"
+                 "ws://echo.websocket.org"
+                 "wss://echo.websocket.org"
+                 "unix:///var/run/geth.ipc"]]
+      (let [channel (open url)]
+        (is (= [:send! :close] (keys channel)))
+        (close channel))))
+  (testing "open throws exception on unsupported schemes"
+    (is (thrown? ExceptionInfo (open "file:///var/run/geth.ipc")))))

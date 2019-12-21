@@ -40,7 +40,7 @@
    :wss   ws/gniazdo
    :unix  unix/unix-socket})
 
-(defn router
+(defn route
   [url]
   (let [scheme (url/scheme url)]
     (if-let [client (routes scheme)]
@@ -52,7 +52,7 @@
 
 (defn open
   [url]
-  (let [client  (router url)
+  (let [client  (route url)
         channel (client/open client url)]
     {:send! (partial client/send! client channel)
      :close (partial client/close client channel)}))
