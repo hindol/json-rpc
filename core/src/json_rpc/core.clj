@@ -52,28 +52,25 @@
 
 (defn open
   [url]
-  (future
-    (let [client  (router url)
-          channel (client/open client url)]
-      {:send! (partial client/send! client channel)
-       :close (partial client/close client channel)})))
+  (let [client  (router url)
+        channel (client/open client url)]
+    {:send! (partial client/send! client channel)
+     :close (partial client/close client channel)}))
 
 (defn send!
   [{send!-fn :send!} method params & {id :id}]
-  (future
-    (let [id       (or id (uuid))
-          request  (encode method params id)
-          response (-> request
-                       (send!-fn))
-          decoded  (decode response)]
-      (log/debugf "request => %s, response => %s" request response)
-      (if (= id (:id decoded))
-        decoded
-        (throw (ex-info "Response ID is different from request ID!"
-                        {:request  request
-                         :response response}))))))
+  (let [id       (or id (uuid))
+        request  (encode method params id)
+        response (-> request
+                     (send!-fn))
+        decoded  (decode response)]
+    (log/debugf "request => %s, response => %s" request response)
+    (if (= id (:id decoded))
+      decoded
+      (throw (ex-info "Response ID is different from request ID!"
+                      {:request  request
+                       :response response})))))
 
 (defn close
   [{close-fn :close}]
-  (future
-    (close-fn)))
+  (close-fn))

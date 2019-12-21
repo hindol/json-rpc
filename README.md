@@ -14,7 +14,7 @@ Blockchain clients including but not limited to [Go Ethereum](https://github.com
 - [x] Support *WebSocket*.
 - [x] Support [*HTTP status override*](https://www.jsonrpc.org/historical/json-rpc-over-http.html#response-codes).
 - [x] Support *UNIX socket*.
-- [x] Write *unit tests*.
+- [ ] Write *unit tests*.
 - [ ] Write *integration tests*.
 - [ ] Expand *API documentation*.
 - [ ] Support WebSocket *Ping/Pong*.
@@ -52,16 +52,13 @@ com.github.hindol/json-rpc.core {:mvn/version "${version}"}
 (def url "ws://localhost:8546")      ;; Or wss://
 (def url "unix:///var/run/geth.ipc")
 
-(def connection (rpc/connect url))
+(def channel (rpc/open url))
 
-;; Receive a future
-(rpc/send! connection "eth_blockNumber" ["latest"])
+(rpc/send! channel "eth_blockNumber" ["latest"])
+;; => {:result "0x14eca", :id "6fd9a7a8-c774-4b76-a61e-6802ae64e212"}
 
-;; Deref to get the response
-@(rpc/send! connection "eth_blockNumber" ["latest"])
-
-;; Like send! but accepts a variable number of arguments
-@(rpc/send!* connection "eth_blockNumber" "latest")
+;; Finally
+(rpc/close channel)
 ```
 
 ## API Documentation

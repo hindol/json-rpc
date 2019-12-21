@@ -7,7 +7,7 @@
 
 (deftest ^:integration clj-http-test
   (testing "POST requests"
-    (let [channel  (client/open clj-http "https://postman-echo.com/post")]
+    (let [channel (client/open clj-http "https://postman-echo.com/post")]
       (try
         (let [request  {:jsonrpc "2.0"
                         :method  "eth_blockNumber"
