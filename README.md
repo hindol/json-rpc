@@ -63,7 +63,7 @@ com.github.hindol/json-rpc.core {:mvn/version "${version}"}
 
 ## API Documentation
 
-[![cljdoc badge](https://cljdoc.org/badge/com.github.hindol/json-rpc.core)](https://cljdoc.org/d/com.github.hindol/json-rpc.core/0.1.0-SNAPSHOT)
+[![cljdoc badge](https://cljdoc.org/badge/com.github.hindol/json-rpc.core)](https://cljdoc.org/d/com.github.hindol/json-rpc.core/CURRENT)
 
 ## Unlicense
 
