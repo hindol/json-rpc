@@ -1,12 +1,11 @@
-{:aliases {:test {:extra-paths ["test"]
-                  :extra-deps  {com.gearswithingears/shrubbery {:mvn/version "0.4.1"}
-                                com.cognitect/test-runner      {:git/url "https://github.com/cognitect-labs/test-runner.git"
-                                                                :sha     "209b64504cb3bd3b99ecfec7937b358a879f55c1"}
-                                org.slf4j/slf4j-simple         {:mvn/version "1.7.28"}}
-                  :main-opts   ["-m" "cognitect.test-runner"]}
-           :pack {:extra-deps {pack/pack.alpha {:git/url "https://github.com/juxt/pack.alpha.git"
-                                                :sha     "c70740ffc10805f34836da2160fa1899601fac02"}}
-                  :main-opts  ["-m" "mach.pack.alpha.skinny" "--no-libs" "--project-path" "dist/json-rpc.core.jar"]}
+{:aliases {:test   {:extra-paths ["test"]
+                    :extra-deps  {com.gearswithingears/shrubbery {:mvn/version "0.4.1"}
+                                  org.slf4j/slf4j-simple         {:mvn/version "1.7.28"}
+                                  lambdaisland/kaocha            {:mvn/version "0.0-565"}
+                                  lambdaisland/kaocha-cloverage  {:mvn/version "0.0-41"}}}
+           :pack   {:extra-deps {pack/pack.alpha {:git/url "https://github.com/juxt/pack.alpha.git"
+                                                  :sha     "c70740ffc10805f34836da2160fa1899601fac02"}}
+                    :main-opts  ["-m" "mach.pack.alpha.skinny" "--no-libs" "--project-path" "dist/json-rpc.core.jar"]}
            :deploy {:extra-deps {deps-deploy {:mvn/version "RELEASE"}}
                     :main-opts  ["-m" "deps-deploy.deps-deploy" "deploy"
                                  "dist/json-rpc.core.jar"]}}
