@@ -1,28 +1,23 @@
 (ns json-rpc.unix
   (:require
-   [clojure.java.io :as io])
+   [clojure.java.io :as io]
+   [json-rpc.client :as client])
   (:import
    (java.io InputStreamReader PrintWriter)
    (java.nio CharBuffer)
    (java.nio.channels Channels)
    (jnr.unixsocket UnixSocketAddress UnixSocketChannel)))
 
-(defprotocol Client
-  "An UNIX socket client."
-  (open [this path] "Opens and returns a UNIX socket for the given path.")
-  (write! [this connection message] "Writes text into a UNIX socket.")
-  (close [this connection] "Closes the UNIX socket."))
+(defrecord UnixSocketClient []
+  client/Client
 
-(defrecord UnixClient []
-  Client
-  
   (open [this path]
     (-> path
         (io/file)
         (UnixSocketAddress.)
         (UnixSocketChannel/open)))
-  
-  (write! [this channel message]
+
+  (send! [this channel message]
     (let [buffer (CharBuffer/allocate 1024)]
       (with-open [os     (Channels/newOutputStream channel)
                   writer (PrintWriter. os)
@@ -31,8 +26,11 @@
         (.write writer message)
         (.read reader buffer)
         (.flip buffer)
-        (str buffer)))))
+        (str buffer))))
 
-(def unix-client
-  "An instance of [[UnixClient]]."
-  (->UnixClient))
+  (close [this conneciton]
+      ;; No-op
+    ))
+
+(def unix-socket
+  (->UnixSocketClient))

@@ -2,6 +2,7 @@
   (:refer-clojure :exclude [send])
   (:require
    [clojure.tools.logging :as log]
+   [json-rpc.client :as client]
    [json-rpc.http :as http]
    [json-rpc.json :as json]
    [json-rpc.unix :as unix]
@@ -27,118 +28,52 @@
    (encode method params (uuid))))
 
 (defn decode
-  "Decodes result or error from JSON-RPC response."
+  "Decodes result or error from JSON-RPC response"
   [json]
   (let [body (json/read-str json/data-json json)]
     (select-keys body [:result :error :id])))
 
-(defmulti connect
-  "Creates a JSON-RPC connection object."
-  url/scheme)
+(def ^:private ^:const routes
+  {:http  http/clj-http
+   :https http/clj-http
+   :ws    ws/gniazdo
+   :wss   ws/gniazdo
+   :unix  unix/unix-socket})
 
-(defmethod connect
-  :http
+(defn router
   [url]
-  {:scheme :http
-   :url    url})
+  (let [scheme (url/scheme url)]
+    (if-let [client (routes scheme)]
+      client
+      (throw (ex-info (format "Unsupported scheme: %s. Supported schemes are: %s."
+                              (url/scheme url)
+                              (keys routes))
+                      {:url url})))))
 
-(defmethod connect
-  :https
+(defn open
   [url]
-  {:scheme :http
-   :url    url})
+  (future
+    (let [client  (router url)
+          channel (client/open client url)]
+      {:send! (partial client/send! client channel)
+       :close (partial client/close client channel)})))
 
-(defmethod connect
-  :ws
-  [url]
-  {:scheme :ws
-   :url    url})
+(defn send!
+  [{send!-fn :send!} method params & {id :id}]
+  (future
+    (let [id       (or id (uuid))
+          request  (encode method params id)
+          response (-> request
+                       (send!-fn))
+          decoded  (decode response)]
+      (log/debugf "request => %s, response => %s" request response)
+      (if (= id (:id decoded))
+        decoded
+        (throw (ex-info "Response ID is different from request ID!"
+                        {:request  request
+                         :response response}))))))
 
-(defmethod connect
-  :wss
-  [url]
-  {:scheme :ws
-   :url    url})
-
-(defmethod connect
-  :unix
-  [url]
-  {:scheme :unix
-   :path   (url/path url)})
-
-(defmethod connect
-  :default
-  [url]
-  (throw (ex-info (format "Unsupported scheme: %s. Are you passing a valid URL?"
-                          (url/scheme url))
-                  {:url url})))
-
-(defmulti send!
-  "Sends a JSON-RPC request to the server.
-   Connection can be over HTTP[S], WS[S] or UNIX sockets."
-  (fn [connection & _]
-    (:scheme connection)))
-
-(defmethod send!
-  :http
-  ;; Sends a JSON-RPC request to the server over HTTP[S].
-  http-send!
-  ([{url :url} client method params]
-   (future
-     (let [request  (encode method params)
-           response (->> request
-                         (http/post! client url))]
-       (log/debugf "request => %s, response => %s" request response)
-       (decode response))))
-  ([connection method params]
-   (send! connection http/clj-http method params)))
-
-(defmethod send!
-  :ws
-  ws-send!
-  ;; Sends a JSON-RPC request to the server over WS[S] .
-  ([connection client method params]
-   (future
-     (let [id       (uuid)
-           request  (encode method params id)
-           response (->> request
-                         (ws/write! client connection)
-                         (decode))]
-       (if (not= id (:id response))
-         response
-         (throw (ex-info "Response ID did not match request ID!"
-                         {:request  request
-                          :response response}))))))
-  ([connection method params]
-   (send! connection ws/gniazdo method params)))
-
-(defmethod send!
-  :unix
-  unix-send!
-  ;; Sends a JSON-RPC request to the server over a UNIX socket.
-  ([connection client method params]
-   (future
-     (let [id       (uuid)
-           request  (encode method params id)
-           response (->> request
-                         (unix/write! client connection)
-                         (decode))]
-       (if (not= id (:id response))
-         response
-         (throw (ex-info "Response ID did not match request ID!"
-                         {:request  request
-                          :response response}))))))
-  ([connection method params]
-   (send! connection unix/unix-client method params)))
-
-(defmethod send!
-  :default
-  [& args]
-  (let [[connection & _] args]
-    (log/warnf "send! called with: %s. No such scheme: %s."
-               args (:scheme connection))))
-
-(defn send!*
-  "Like [[send!]] but accepts a variable number of arguments."
-  [connection method & params]
-  (send! connection method params))
+(defn close
+  [{close-fn :close}]
+  (future
+    (close-fn)))
