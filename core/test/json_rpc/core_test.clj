@@ -72,7 +72,7 @@
                  "wss://echo.websocket.org"
                  "unix:///var/run/geth.ipc"]]
       (let [channel (open url)]
-        (is (= [:send! :close] (keys channel)))
+        (is (= [:send!-fn :close-fn] (keys channel)))
         (close channel))))
   (testing "open throws exception on unsupported schemes"
     (is (thrown? ExceptionInfo (open "file:///var/run/geth.ipc")))))

@@ -54,11 +54,11 @@
   [url]
   (let [client  (route url)
         channel (client/open client url)]
-    {:send! (partial client/send! client channel)
-     :close (partial client/close client channel)}))
+    {:send!-fn (partial client/send! client channel)
+     :close-fn #(client/close client channel)}))
 
 (defn send!
-  [{send!-fn :send!} method params & {id :id}]
+  [{send!-fn :send!-fn} method params & {id :id}]
   (let [id       (or id (uuid))
         request  (encode method params id)
         response (-> request
@@ -72,5 +72,5 @@
                        :response response})))))
 
 (defn close
-  [{close-fn :close}]
+  [{close-fn :close-fn}]
   (close-fn))
