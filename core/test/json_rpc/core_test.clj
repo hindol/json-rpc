@@ -3,6 +3,7 @@
    [clojure.data.json :as json]
    [clojure.string :as str]
    [clojure.test :refer [deftest is testing]]
+   [json-rpc.client :as client]
    [json-rpc.core :refer [close decode encode send! open route uuid version]]
    [json-rpc.http :as http]
    [json-rpc.unix :as unix]
@@ -66,20 +67,28 @@
   (testing "route throws exception on unsupported schemes"
     (is (thrown? ExceptionInfo (route "file:///var/run/geth.ipc")))))
 
-(deftest ^:integration send!-test
-  (testing "open can open channels for all supported schemes"
-    (doseq [url ["http://postman-echo.com/post"
-                 "https://postman-echo.com/post"
-                 "ws://echo.websocket.org"
-                 "wss://echo.websocket.org"
-                 "unix:///var/run/geth.ipc"]]
-      (let [channel (open url)]
-        (is (= [:send!-fn :close-fn] (keys channel)))
-        (try
-          (send! channel "eth_blockNumber" ["latest"])
-          (finally (close channel))))))
-  (testing "open works with [[with-open]]"
-    (with-open [channel (open "https://postman-echo.com/post")]
-      (send! channel "eth_blockNumber" ["latest"])))
-  (testing "open throws exception on unsupported schemes"
-    (is (thrown? ExceptionInfo (open "file:///var/run/geth.ipc")))))
+(deftest send!-test
+  (let [id       (uuid)
+        response (json/write-str {:jsonrpc "2.0"
+                                  :result  "0x0"
+                                  :id      id})
+        client   (mock client/Client {:send! response
+                                      :close nil})]
+    (testing "open can open channels for all supported schemes"
+      (doseq [url ["http://postman-echo.com/post"
+                   "https://postman-echo.com/post"
+                   "ws://echo.websocket.org"
+                   "wss://echo.websocket.org"
+                   "unix:///var/run/geth.ipc"]]
+        (let [channel (open url :route-fn (fn [_] client))]
+          (is (= [:send!-fn :close-fn] (keys channel)))
+          (try
+            (is (= {:result "0x0"
+                    :id     id}
+                   (send! channel "eth_blockNumber" ["latest"] :id id)))
+            (finally (close channel))))))
+    (testing "open works with [[with-open]]"
+      (with-open [channel (open "ws://echo.websocket.org")]
+        (send! channel "eth_blockNumber" ["latest"])))
+    (testing "open throws exception on unsupported schemes"
+      (is (thrown? ExceptionInfo (open "file:///var/run/geth.ipc"))))))
