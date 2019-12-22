@@ -57,14 +57,16 @@
             :id    1}))))
 
 (deftest route-test
-  (testing "router returns correct record for scheme"
+  (testing "route returns correct record for scheme"
     (is (= http/clj-http (route "http://postman-echo.com/post")))
     (is (= http/clj-http (route "https://postman-echo.com/post")))
     (is (= ws/gniazdo (route "ws://echo.websocket.org")))
     (is (= ws/gniazdo (route "wss://echo.websocket.org")))
-    (is (= unix/unix-socket (route "unix:///var/run/geth.ipc")))))
+    (is (= unix/unix-socket (route "unix:///var/run/geth.ipc"))))
+  (testing "route throws exception on unsupported schemes"
+    (is (thrown? ExceptionInfo (route "file:///var/run/geth.ipc")))))
 
-(deftest ^:integration open-test
+(deftest ^:integration send!-test
   (testing "open can open channels for all supported schemes"
     (doseq [url ["http://postman-echo.com/post"
                  "https://postman-echo.com/post"
@@ -73,6 +75,11 @@
                  "unix:///var/run/geth.ipc"]]
       (let [channel (open url)]
         (is (= [:send!-fn :close-fn] (keys channel)))
-        (close channel))))
+        (try
+          (send! channel "eth_blockNumber" ["latest"])
+          (finally (close channel))))))
+  (testing "open works with [[with-open]]"
+    (with-open [channel (open "https://postman-echo.com/post")]
+      (send! channel "eth_blockNumber" ["latest"])))
   (testing "open throws exception on unsupported schemes"
     (is (thrown? ExceptionInfo (open "file:///var/run/geth.ipc")))))

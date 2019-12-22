@@ -50,12 +50,17 @@
                               (keys routes))
                       {:url url})))))
 
+(defrecord Channel [send!-fn close-fn]
+  java.io.Closeable
+  (close [this]
+    (close-fn)))
+
 (defn open
   [url]
   (let [client  (route url)
         channel (client/open client url)]
-    {:send!-fn (partial client/send! client channel)
-     :close-fn #(client/close client channel)}))
+    (map->Channel {:send!-fn (partial client/send! client channel)
+                   :close-fn #(client/close client channel)})))
 
 (defn send!
   [{send!-fn :send!-fn} method params & {id :id}]

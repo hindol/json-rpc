@@ -10,7 +10,6 @@ Blockchain clients including but not limited to [Go Ethereum](https://github.com
 
 - [x] Support *Clojure*.
 - [x] Support *HTTP*.
-- [x] *Future* support.
 - [x] Support *WebSocket*.
 - [x] Support [*HTTP status override*](https://www.jsonrpc.org/historical/json-rpc-over-http.html#response-codes).
 - [x] Support *UNIX socket*.
@@ -59,6 +58,14 @@ com.github.hindol/json-rpc.core {:mvn/version "${version}"}
 
 ;; Finally
 (rpc/close channel)
+```
+
+Or, if you prefer,
+
+```clojure
+(with-open [channel (open "http://localhost:8545")]
+  (send! channel "eth_blockNumber" ["latest"]))
+  ;; => {:result "0x14eca", :id "6fd9a7a8-c774-4b76-a61e-6802ae64e212"}
 ```
 
 ## API Documentation
