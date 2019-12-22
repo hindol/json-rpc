@@ -8,21 +8,13 @@ Blockchain clients including but not limited to [Go Ethereum](https://github.com
 
 ## Goals
 
-- [x] Support *Clojure*.
-- [x] Support *HTTP*.
-- [x] Support *WebSocket*.
-- [x] Support [*HTTP status override*](https://www.jsonrpc.org/historical/json-rpc-over-http.html#response-codes).
-- [x] Support *UNIX socket*.
-- [ ] Write *unit tests*.
-- [ ] Write *integration tests*.
-- [ ] Expand *API documentation*.
-- [ ] Support WebSocket *Ping/Pong*.
-- [ ] Support *request batching*.
-- [ ] Pluggable *HTTP client*.
-- [ ] Pluggable *WebSocket client*.
-- [ ] Pluggable *JSON encoder*.
-- [ ] Support *ClojureScript*.
-- [ ] Support *JSON-RPC notification*.
+- [x] Unified interface over HTTP\[S\], WS\[S\] and UNIX socket
+- [ ] 100% unit test coverage
+- [ ] WebSocket keep alive (ping/pong)
+- [ ] Integration tests
+- [ ] Examples
+- [ ] Request batching
+- [ ] Add support for ClojureScript
 
 ## Usage
 
