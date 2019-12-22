@@ -1,4 +1,4 @@
-# JSON-RPC 2.0
+# JSON-RPC 2.0 [![Clojars Project](https://img.shields.io/clojars/v/com.github.hindol/json-rpc.core.svg)](https://clojars.org/com.github.hindol/json-rpc.core) [![cljdoc badge](https://cljdoc.org/badge/com.github.hindol/json-rpc.core)](https://cljdoc.org/d/com.github.hindol/json-rpc.core/CURRENT)
 
 Unified [JSON-RPC 2.0](https://www.jsonrpc.org/specification) interface over HTTP\[S\], WebSocket and UNIX socket for Clojure/Script.
 
