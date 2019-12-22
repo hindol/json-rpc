@@ -2,7 +2,10 @@
                     :extra-deps  {com.gearswithingears/shrubbery {:mvn/version "0.4.1"}
                                   org.slf4j/slf4j-simple         {:mvn/version "1.7.28"}
                                   lambdaisland/kaocha            {:mvn/version "0.0-565"}
-                                  lambdaisland/kaocha-cloverage  {:mvn/version "0.0-41"}}}
+                                  lambdaisland/kaocha-cloverage  {:mvn/version "0.0-41"}}
+                    :jvm-opts    ["-Dclojure.compile.warn-on-reflection=true"
+                                  "-Dorg.slf4j.simpleLogger.defaultLogLevel=info"
+                                  "-Dorg.slf4j.simpleLogger.log.json-rpc=trace"]}
            :pack   {:extra-deps {pack/pack.alpha {:git/url "https://github.com/juxt/pack.alpha.git"
                                                   :sha     "c70740ffc10805f34836da2160fa1899601fac02"}}
                     :main-opts  ["-m" "mach.pack.alpha.skinny" "--no-libs" "--project-path" "dist/json-rpc.core.jar"]}
