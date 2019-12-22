@@ -20,10 +20,13 @@
 (defn encode
   "Encodes JSON-RPC method and params as a valid JSON-RPC request."
   ([method params id]
-   (json/write-str json/data-json {:jsonrpc version
-                                   :method  method
-                                   :params  params
-                                   :id      id}))
+   (let [request {:jsonrpc version
+                  :method  method
+                  :params  params
+                  :id      id}
+         encoded (json/write-str json/data-json request)]
+     (log/debugf "map => %s, json => %s" request encoded)
+     encoded))
   ([method params]
    (encode method params (uuid))))
 
@@ -31,6 +34,7 @@
   "Decodes result or error from JSON-RPC response"
   [json]
   (let [body (json/read-str json/data-json json)]
+    (log/debugf "json => %s, map => %s" json body)
     (select-keys body [:result :error :id])))
 
 (def ^:private ^:const routes
@@ -60,6 +64,7 @@
   (let [route-fn (or route-fn route)
         client   (route-fn url)
         channel  (client/open client url)]
+    (log/debugf "url => %s" url)
     (map->Channel {:send!-fn (partial client/send! client channel)
                    :close-fn #(client/close client channel)})))
 
