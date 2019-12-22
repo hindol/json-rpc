@@ -60,6 +60,14 @@ Or, if you prefer,
   ;; => {:result "0x14eca", :id "6fd9a7a8-c774-4b76-a61e-6802ae64e212"}
 ```
 
+If ID is not supplied, an auto-generated UUID will be used. Set ID explicitly using the optional `:id` key on `send!`,
+
+```clojure
+(with-open [channel (open "http://localhost:8545")]
+  (send! channel "eth_blockNumber" ["latest"] :id 1))
+  ;; => {:result "0x14eca", :id 1}
+```
+
 ## API Documentation
 
 [![cljdoc badge](https://cljdoc.org/badge/com.github.hindol/json-rpc.core)](https://cljdoc.org/d/com.github.hindol/json-rpc.core/CURRENT)
