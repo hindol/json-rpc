@@ -85,10 +85,18 @@
           (try
             (is (= {:result "0x0"
                     :id     id}
-                   (send! channel "eth_blockNumber" ["latest"] :id id)))
+                   (send! channel "eth_blockNumber" [] :id id)))
             (finally (close channel))))))
+
     (testing "open works with [[with-open]]"
       (with-open [channel (open "ws://echo.websocket.org")]
-        (send! channel "eth_blockNumber" ["latest"])))
+        (send! channel "eth_blockNumber" [])))
+
     (testing "open throws exception on unsupported schemes"
-      (is (thrown? ExceptionInfo (open "file:///var/run/geth.ipc"))))))
+      (is (thrown? ExceptionInfo (open "file:///var/run/geth.ipc"))))
+
+    (testing "send! throws if request ID and response ID don't match"
+      (let [channel (open "http://postman-echo.com/post"
+                          :route-fn (fn [_] client))]
+        (is (thrown? ExceptionInfo
+                     (send! channel "eth_blockNumber" [] :id (uuid))))))))
