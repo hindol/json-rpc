@@ -9,9 +9,9 @@ Blockchain clients including but not limited to [Go Ethereum](https://github.com
 ## Goals
 
 - [x] Unified interface over HTTP\[S\], WS\[S\] and UNIX socket
-- [ ] 100% unit test coverage
-- [ ] WebSocket keep alive (ping/pong)
+- [x] Unit tests
 - [ ] Integration tests
+- [ ] WebSocket keep alive (ping/pong)
 - [ ] Examples
 - [ ] Request batching
 - [ ] Add support for ClojureScript
