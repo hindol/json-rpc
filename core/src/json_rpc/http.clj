@@ -3,28 +3,31 @@
    [clj-http.client :as http]
    [json-rpc.client :as client]))
 
-(defn- parse-int
-  [s]
-  (Integer/parseInt s))
+(defn error->status
+  "Converts a JSON-RPC error code into the appropriate HTTP status."
+  [code]
+  (cond
+    (= -32600 code)                400
+    (= -32601 code)                404
+    (#{-32602 -32603 -32700} code) 500
+    (<= -32099 code -32000)        500))
 
-(defn infer-http-status
+(defn infer-status
   "Infer the HTTP status code from the JSON-RPC response.
    See: https://www.jsonrpc.org/historical/json-rpc-over-http.html#errors"
   [body]
   (if-let [error (:error body)]
-    (let [code (:code error)]
-      (try
-        (let [code (parse-int code)]
-          (cond
-            (= -32600 code)                400
-            (= -32601 code)                404
-            (#{-32602 -32603 -32700} code) 500
-            (<= -32099 -32000)             500
-            :else (throw (ex-info "JSON-RPC error code invalid!"
-                                  {:response body}))))
-        (catch java.lang.NumberFormatException ex
-          (throw (ex-info "JSON-RPC error code is not a number!"
-                          {:response body} ex)))))))
+    (if-let [code (:code error)]
+      (if (int? code)
+        (if-let [status (error->status code)]
+          status
+          (throw (ex-info "Error code invalid!"
+                          {:response body})))
+        (throw (ex-info "Error code is not a number!"
+                        {:response body})))
+      (throw (ex-info "Error code missing from error response!"
+                      {:response body})))
+    200))
 
 (defrecord CljHttpClient [options]
   client/Client
