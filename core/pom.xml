@@ -3,7 +3,7 @@
   <modelVersion>4.0.0</modelVersion>
   <groupId>com.github.hindol</groupId>
   <artifactId>json-rpc.core</artifactId>
-  <version>0.1.3</version>
+  <version>0.1.4</version>
   <name>JSON-RPC 2.0</name>
   <build>
     <sourceDirectory>src</sourceDirectory>
@@ -44,11 +44,6 @@
       <version>3.10.0</version>
     </dependency>
     <dependency>
-      <groupId>io.pedestal</groupId>
-      <artifactId>pedestal.interceptor</artifactId>
-      <version>0.5.7</version>
-    </dependency>
-    <dependency>
       <groupId>stylefruits</groupId>
       <artifactId>gniazdo</artifactId>
       <version>1.1.2</version>
@@ -57,6 +52,11 @@
       <groupId>com.github.jnr</groupId>
       <artifactId>jnr-unixsocket</artifactId>
       <version>0.24</version>
+    </dependency>
+    <dependency>
+      <groupId>org.clojure</groupId>
+      <artifactId>core.async</artifactId>
+      <version>0.6.532</version>
     </dependency>
   </dependencies>
   <distributionManagement>
