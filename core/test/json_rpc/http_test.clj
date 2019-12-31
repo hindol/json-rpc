@@ -36,7 +36,7 @@
                           :method  "eth_blockNumber"
                           :params  ["latest"]
                           :id      1}
-                response (json/read-str (client/send! clj-http
+                response (json/read-str (client/send clj-http
                                                       channel
                                                       (json/write-str request))
                                         :key-fn keyword)]

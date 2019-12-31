@@ -35,7 +35,7 @@
   (open [this url]
     {:url url})
 
-  (send! [this {url :url} message]
+  (send [this {url :url} message]
     (->> {:body message}
          (merge options)
          (http/post url)

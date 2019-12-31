@@ -17,7 +17,7 @@
         (UnixSocketAddress.)
         (UnixSocketChannel/open)))
 
-  (send! [this channel message]
+  (send [this channel message]
     (let [buffer (CharBuffer/allocate 1024)]
       (with-open [os     (Channels/newOutputStream channel)
                   writer (PrintWriter. os)

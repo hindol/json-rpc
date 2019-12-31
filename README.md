@@ -45,7 +45,7 @@ com.github.hindol/json-rpc.core {:mvn/version "${version}"}
 
 (def channel (rpc/open url))
 
-(rpc/send! channel "eth_blockNumber" [])
+(rpc/send channel "eth_blockNumber" [])
 ;; => {:result "0x14eca", :id "6fd9a7a8-c774-4b76-a61e-6802ae64e212"}
 
 ;; Finally
@@ -56,15 +56,15 @@ Or, if you prefer,
 
 ```clojure
 (with-open [channel (rpc/open "http://localhost:8545")]
-  (rpc/send! channel "eth_blockNumber" []))
+  (rpc/send channel "eth_blockNumber" []))
   ;; => {:result "0x14eca", :id "6fd9a7a8-c774-4b76-a61e-6802ae64e212"}
 ```
 
-If ID is not supplied, an auto-generated UUID will be used. Set ID explicitly using the optional `:id` key on `send!`,
+If ID is not supplied, an auto-generated UUID will be used. Set ID explicitly using the optional `:id` key on `send`,
 
 ```clojure
 (with-open [channel (rpc/open "http://localhost:8545")]
-  (rpc/send! channel "eth_blockNumber" [] :id 1))
+  (rpc/send channel "eth_blockNumber" [] :id 1))
   ;; => {:result "0x14eca", :id 1}
 ```
 

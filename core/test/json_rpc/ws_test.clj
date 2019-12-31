@@ -16,7 +16,7 @@
                           :id      1}
                 response (json/read-str (->> request
                                              (json/write-str)
-                                             (client/send! gniazdo channel))
+                                             (client/send gniazdo channel))
                                         :key-fn keyword)]
             (is (= request response)))
           (finally (client/close gniazdo channel)))))))

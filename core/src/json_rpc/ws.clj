@@ -13,7 +13,7 @@
       {:socket socket
        :source source}))
 
-  (send! [this {:keys [socket source]} message]
+  (send [this {:keys [socket source]} message]
     (ws/send-msg socket message)
     (<!! source))
 
