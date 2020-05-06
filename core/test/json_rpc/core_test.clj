@@ -1,4 +1,5 @@
 (ns json-rpc.core-test
+  (:refer-clojure :exclude [send])
   (:require
    [clojure.data.json :as json]
    [clojure.string :as str]

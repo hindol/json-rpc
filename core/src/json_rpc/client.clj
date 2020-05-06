@@ -1,4 +1,5 @@
-(ns json-rpc.client)
+(ns json-rpc.client
+  (:refer-clojure :exclude [send]))
 
 (defprotocol Client
   "A JSON-RPC client."
