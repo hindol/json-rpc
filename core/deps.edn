@@ -1,8 +1,8 @@
 {:aliases {:test   {:extra-paths ["test"]
                     :extra-deps  {com.gearswithingears/shrubbery {:mvn/version "0.4.1"}
-                                  org.slf4j/slf4j-simple         {:mvn/version "1.7.28"}
-                                  lambdaisland/kaocha            {:mvn/version "0.0-565"}
-                                  lambdaisland/kaocha-cloverage  {:mvn/version "0.0-41"}}
+                                  org.slf4j/slf4j-simple         {:mvn/version "1.7.30"}
+                                  lambdaisland/kaocha            {:mvn/version "1.0.629"}
+                                  lambdaisland/kaocha-cloverage  {:mvn/version "1.0-45"}}
                     :jvm-opts    ["-Dclojure.compile.warn-on-reflection=true"
                                   "-Dorg.slf4j.simpleLogger.defaultLogLevel=info"
                                   "-Dorg.slf4j.simpleLogger.log.json-rpc=trace"]}
