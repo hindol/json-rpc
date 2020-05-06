@@ -9,11 +9,8 @@
    [json-rpc.url :as url]
    [json-rpc.ws :as ws]))
 
-(def ^:dynamic *numeric-keys*
-  "The set of keys whose values are automatically converted from hexadecimal to decimal.")
-
-(def ^:const version
-  "JSON-RPC protocol version."
+(def ^:dynamic *version*
+  "The JSON-RPC protocol version."
   "2.0")
 
 (defn uuid
@@ -23,7 +20,7 @@
 (defn encode
   "Encodes JSON-RPC method and params as a valid JSON-RPC request."
   ([method params id]
-   (let [request {:jsonrpc version
+   (let [request {:jsonrpc *version*
                   :method  method
                   :params  params
                   :id      id}

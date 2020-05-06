@@ -5,7 +5,7 @@
    [clojure.string :as str]
    [clojure.test :refer [deftest is testing]]
    [json-rpc.client :as client]
-   [json-rpc.core :refer [close decode encode send open route uuid version]]
+   [json-rpc.core :refer [*version* close decode encode send open route uuid]]
    [json-rpc.http :as http]
    [json-rpc.unix :as unix]
    [json-rpc.ws :as ws]
@@ -28,7 +28,7 @@
           id     1]
       (is (= (json/read-str (encode method params id)
                             :key-fn keyword)
-             {:jsonrpc version
+             {:jsonrpc *version*
               :method  method
               :params  params
               :id      id}))))
@@ -38,19 +38,19 @@
       (is (= (dissoc (json/read-str (encode method params)
                                     :key-fn keyword)
                      :id)
-             {:jsonrpc version
+             {:jsonrpc *version*
               :method  method
               :params  params})))))
 
 (deftest decode-test
   (testing "response with result"
-    (is (= (decode (json/write-str {:jsonrpc version
+    (is (= (decode (json/write-str {:jsonrpc *version*
                                     :result  "0x0"
                                     :id      1}))
            {:result "0x0"
             :id     1})))
   (testing "response with error"
-    (is (= (decode (json/write-str {:jsonrpc version
+    (is (= (decode (json/write-str {:jsonrpc *version*
                                     :error   {:code    -32602
                                               :message "Method not found"}
                                     :id      1}))

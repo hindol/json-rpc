@@ -4,6 +4,10 @@
    [clojure.data.json :as json]
    [clojure.string :as str]))
 
+(def ^:dynamic *numeric-keys*
+  "The set of keys whose values are automatically converted from hexadecimal to decimal."
+  #{})
+
 (defn ^:private numeric-key?
   [k]
   (contains? *numeric-keys* k))
