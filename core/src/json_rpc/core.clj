@@ -65,7 +65,7 @@
         client   (route-fn url)
         channel  (client/open client url)]
     (log/debugf "url => %s" url)
-    (map->Channel {:send-fn (partial client/send client channel)
+    (map->Channel {:send-fn  (partial client/send client channel)
                    :close-fn #(client/close client channel)})))
 
 (defn send
