@@ -1,5 +1,6 @@
 (ns json-rpc.json
   (:require
+   [camel-snake-kebab.core :as csk]
    [clojure.data.json :as json]))
 
 (defprotocol Encoder
@@ -14,7 +15,7 @@
     (json/write-str m))
 
   (read-str [this s]
-    (json/read-str s :key-fn keyword)))
+    (json/read-str s :key-fn csk/->kebab-case-keyword)))
 
 (def data-json
   "An instance of [[DataJson]]."
