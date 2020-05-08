@@ -86,7 +86,7 @@
           (try
             (is (= {:result "0x0"
                     :id     id}
-                   (send channel "eth_blockNumber" [] :id id)))
+                   (send channel "eth_blockNumber" [] {:id id})))
             (finally (close channel))))))
 
     (testing "open works with [[with-open]]"
@@ -100,4 +100,4 @@
       (let [channel (open "http://postman-echo.com/post"
                           :route-fn (fn [_] client))]
         (is (thrown? ExceptionInfo
-                     (send channel "eth_blockNumber" [] :id (uuid))))))))
+                     (send channel "eth_blockNumber" [] {:id (uuid)})))))))

@@ -64,7 +64,7 @@ If ID is not supplied, an auto-generated UUID will be used. Set ID explicitly us
 
 ```clojure
 (with-open [channel (rpc/open "http://localhost:8545")]
-  (rpc/send channel "eth_blockNumber" [] :id 1))
+  (rpc/send channel "eth_blockNumber" [] {:id 1}))
   ;; => {:result "0x14eca", :id 1}
 ```
 
