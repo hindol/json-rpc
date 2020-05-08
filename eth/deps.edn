@@ -1,0 +1,2 @@
+{:deps  {com.github.hindol/json-rpc.core {:local/root "../core"}}
+ :paths ["src" "resources"]}
