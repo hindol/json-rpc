@@ -30,7 +30,7 @@
   (testing "POST requests"
     (doseq [url ["http://postman-echo.com/post"
                  "https://postman-echo.com/post"]]
-      (let [channel (client/open clj-http url)]
+      (let [channel (client/open clj-http url {})]
         (try
           (let [request  {:jsonrpc "2.0"
                           :method  "eth_blockNumber"

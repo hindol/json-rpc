@@ -8,7 +8,7 @@
 (deftest ^:integration gniazdo-test
   (testing "with echo response"
     (doseq [url ["ws://echo.websocket.org"]]
-      (let [channel (client/open gniazdo url)]
+      (let [channel (client/open gniazdo url {})]
         (try
           (let [request  {:jsonrpc "2.0"
                           :method  "eth_blockNumber"
