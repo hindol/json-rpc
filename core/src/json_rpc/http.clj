@@ -32,12 +32,14 @@
 (defrecord CljHttpClient [options]
   client/Client
 
-  (open [this url]
-    {:url url})
+  (open [this url headers]
+    {:url url
+     :headers headers})
 
-  (send [this {url :url} message]
-    (->> {:body message}
-         (merge options)
+  (send [this {url :url headers :headers} message]
+    (->> (-> options
+             (update :headers merge headers)
+             (assoc :body message))
          (http/post url)
          :body))
 

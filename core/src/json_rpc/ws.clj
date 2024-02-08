@@ -6,10 +6,10 @@
 
 (defrecord GniazdoClient []
   client/Client
-  
-  (open [this url]
+
+  (open [this url headers]
     (let [source (async/chan)
-          socket (ws/connect url :on-receive #(>!! source %))]
+          socket (ws/connect url :on-receive #(>!! source %) :headers headers)]
       {:socket socket
        :source source}))
 

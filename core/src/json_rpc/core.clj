@@ -60,10 +60,10 @@
     (close-fn)))
 
 (defn open
-  [url & {route-fn :route-fn}]
+  [url & {route-fn :route-fn headers :headers}]
   (let [route-fn (or route-fn route)
         client   (route-fn url)
-        channel  (client/open client url)]
+        channel  (client/open client url headers)]
     (log/debugf "url => %s" url)
     (map->Channel {:send-fn  (partial client/send client channel)
                    :close-fn #(client/close client channel)})))

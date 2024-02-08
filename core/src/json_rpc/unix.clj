@@ -11,7 +11,7 @@
 (defrecord UnixSocketClient []
   client/Client
 
-  (open [this path]
+  (open [this path _headers]
     (-> path
         (io/file)
         (UnixSocketAddress.)
